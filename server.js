@@ -72,17 +72,22 @@ const commentPayloadSchema = {
 const validateCommentPayload = ajv.compile(commentPayloadSchema);
 
 const cardPayloadSchema = {
-    type: "object", additionalProperties: false, properties: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
         kind: { const: "userCard" },
         name: { type: "string", minLength: 2 },
         movieTitle: { type: "string", minLength: 1 },
         title: { type: "string", minLength: 1 },
         description: { type: "string", minLength: 2 },
-        imageUrl: { type: "string" },
+        // ↓ ОНОВЛЕНО: дозволяємо або рядок, або null
+        imageUrl: { anyOf: [{ type: "string" }, { type: "null" }] },
         isPublic: { type: "boolean", default: false },
         authorToken: { type: "string", minLength: 16 }
-    }, required: ["kind", "name", "movieTitle", "title", "description", "authorToken"]
+    },
+    required: ["kind", "name", "movieTitle", "title", "description", "authorToken"]
 };
+
 const validateCardPayload = ajv.compile(cardPayloadSchema);
 
 function isAdmin(req) {
